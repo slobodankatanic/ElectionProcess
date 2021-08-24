@@ -180,6 +180,7 @@ def deleteUser():
     if (not user):
         return jsonify(message = "Unknown user."), 400;
 
+    UserRole.query.filter(UserRole.userId == user.id).delete();
     User.query.filter(User.email == email).delete();
 
     database.session.commit();
