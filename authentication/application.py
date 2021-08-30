@@ -12,7 +12,7 @@ application.config.from_object(Configuration);
 jwt = JWTManager(application);
 
 def checkJMBG(jmbg):
-    if ((len(jmbg) != 13) or (not jmbg.isnumeric())):
+    if ((len(jmbg) != 13)):
         return False;
 
     day = int(jmbg[0:2]);
@@ -27,16 +27,16 @@ def checkJMBG(jmbg):
     if (region > 99 or region < 70):
         return False;
 
-    control = int(jmbg[12]);
-    realControl = (7 * (int(jmbg[0]) + int(jmbg[6])) + 6 * (int(jmbg[1]) + int(jmbg[7])) +
-                   5 * (int(jmbg[2]) + int(jmbg[8])) + 4 * (int(jmbg[3]) + int(jmbg[9])) +
-                   3 * (int(jmbg[4]) + int(jmbg[10])) + 2 * (int(jmbg[5]) + int(jmbg[11]))) % 11;
-    if (realControl <= 9):
-        if (control != realControl):
-            return False;
-    else:
-        if (realControl != 0):
-            return False;
+    # control = int(jmbg[12]);
+    # realControl = (7 * (int(jmbg[0]) + int(jmbg[6])) + 6 * (int(jmbg[1]) + int(jmbg[7])) +
+    #                5 * (int(jmbg[2]) + int(jmbg[8])) + 4 * (int(jmbg[3]) + int(jmbg[9])) +
+    #                3 * (int(jmbg[4]) + int(jmbg[10])) + 2 * (int(jmbg[5]) + int(jmbg[11]))) % 11;
+    # if (realControl <= 9):
+    #     if (control != realControl):
+    #         return False;
+    # else:
+    #     if (realControl != 0):
+    #         return False;
 
     return True;
 
@@ -44,7 +44,7 @@ def checkPassword(password):
     if (len(password) < 8):
         return False;
 
-    if ((re.search("[0-9]",password) is None) or (re.search("[A-Z]",password) is None)
+    if ((re.search("[0-9]", password) is None) or (re.search("[A-Z]", password) is None) or
         (re.search("[a-z]",password) is None)):
         return False;
 
@@ -66,20 +66,20 @@ def register():
 
     if (jmbgEmpty):
         return jsonify(message = "Field jmbg is missing."), 400;
-    if (emailEmpty):
-        return jsonify(message = "Field email is missing."), 400;
-    if (passwordEmpty):
-        return jsonify(message = "Field password is missing."), 400;
     if (foreameEmpty):
         return jsonify(message = "Field forename is missing."), 400;
     if (surnameEmpty):
         return jsonify(message = "Field surname is missing."), 400;
+    if (emailEmpty):
+        return jsonify(message = "Field email is missing."), 400;
+    if (passwordEmpty):
+        return jsonify(message = "Field password is missing."), 400;
 
     if (not checkJMBG(jmbg)):
         return jsonify(message = "Invalid jmbg."), 400;
 
-    result = parseaddr(email);
-    if (len(result[1]) == 0):
+    emailRegex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b';
+    if (not re.fullmatch(emailRegex, email)):
         return jsonify(message = "Invalid email."), 400;
 
     if (not checkPassword(password)):
@@ -112,9 +112,9 @@ def login():
     if (passwordEmpty):
         return jsonify(message = "Field password is missing."), 400;
 
-    result = parseaddr(email);
-    if (len(result[1]) == 0):
-        return jsonify(message = "Invalid email."), 400;
+    emailRegex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b';
+    if (not re.fullmatch(emailRegex, email)):
+        return jsonify(message="Invalid email."), 400;
 
     user = User.query.filter(and_(User.email == email, User.password == password)).first();
 
@@ -171,9 +171,9 @@ def deleteUser():
     if (emailEmpty):
         return jsonify(message = "Field email is missing."), 400;
 
-    result = parseaddr(email);
-    if (len(result[1]) == 0):
-        return jsonify(message = "Invalid email."), 400;
+    emailRegex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b';
+    if (not re.fullmatch(emailRegex, email)):
+        return jsonify(message="Invalid email."), 400;
 
     user = User.query.filter(and_(User.email == email)).first();
 
@@ -189,4 +189,4 @@ def deleteUser():
 
 if (__name__ == "__main__"):
     database.init_app(application);
-    application.run(debug = True);
+    application.run(debug = True, host = "0.0.0.0", port = 5002);

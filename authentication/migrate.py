@@ -27,9 +27,9 @@ with application.app_context() as context:
     database.session.commit();
 
     admin = User(
-        jmbg = "2204999773615",
+        jmbg = "0000000000000",
         email = "admin@admin.com",
-        password = "123456Aa",
+        password = "1",
         forename = "admin",
         surname = "admin"
     );

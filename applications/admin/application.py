@@ -1,25 +1,24 @@
 from flask import Flask, request, Response, jsonify;
 from applications.configuration import Configuration;
-from email.utils import parseaddr;
 from sqlalchemy import and_;
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, create_refresh_token, get_jwt, get_jwt_identity;
-from applications.models import database, Participant, Election, ElectionParticipant;
-from rightAccess import roleCheck;
-from datetime import datetime;
+from applications.models import database, Participant, Election, ElectionParticipant, Vote;
+from applications.rightAccess import roleCheck;
+from datetime import datetime, timedelta;
 import copy;
 
-application = Flask(__name__);
+application = Flask(__name__)
 application.config.from_object(Configuration);
 jwt = JWTManager(application);
 
-@application.route("/createParticipant", models = ["POST"])
+@application.route("/createParticipant", methods = ["POST"])
 @roleCheck(role = "admin")
 def createParticipant():
     name = request.json.get("name", "");
-    individual = request.json.get("name", "");
+    individual = request.json.get("individual", "");
 
     nameEmpty = len(name) == 0;
-    individualInvalid = isinstance(individual, bool);
+    individualInvalid = not isinstance(individual, bool);
 
     if (nameEmpty):
         return jsonify(message = "Field name is missing."), 400;
@@ -36,7 +35,7 @@ def createParticipant():
 
     return jsonify(id = participant.id);
 
-@application.route("/getParticipant", models = ["GET"])
+@application.route("/getParticipants", methods = ["GET"])
 @roleCheck(role = "admin")
 def getParticipant():
     participants = [];
@@ -74,7 +73,7 @@ def checkDateTimeRange(start, end):
 
     return True;
 
-@application.route("/createElection", models = ["POST"])
+@application.route("/createElection", methods = ["POST"])
 @roleCheck(role = "admin")
 def createElection():
     start = request.json.get("start", "");
@@ -121,19 +120,21 @@ def createElection():
         if ((not participantObject) or (type != participantObject.type)):
             return jsonify(message = "Invalid participant."), 400;
 
-    # add election, add electionpart, return poll numbers
     election = Election(start = start, end = end, type = type);
     database.session.add(election);
     database.session.commit();
 
-    pollNumber = 0;
     for participantId, pollNumber in zip(participants, range(1, len(participants) + 1)):
         electionParticipant = ElectionParticipant(electionId = election.id, participantId = participantId, pollNumber = pollNumber);
         database.session.add(electionParticipant);
 
     database.session.commit();
 
-    return jsonify(pollNumbers = range(1, len(participants) + 1));
+    pollNumbers = [];
+    for i in range(1, len(participants) + 1):
+        pollNumbers.append(i);
+
+    return jsonify(pollNumbers = pollNumbers);
 
 @application.route("/getElections", methods = ["GET"])
 @roleCheck(role = "admin")
@@ -179,10 +180,10 @@ def presidentialElection(election):
     totalVotes = 0;
 
     for vote in votes:
-        if (len(vote.reasonForInvalidity) == 0):
+        if (len(vote.reasonForInvalidity) != 0):
             invalidVotes.append({
                "electionOfficialJmbg": vote.officialJmbg,
-               "ballotGuid": vote.id,
+               "ballotGuid": vote.guid,
                "pollNumber": getParticipantPollNumber(vote.participantId, electionParticipants),
                "reason": vote.reasonForInvalidity
             });
@@ -219,10 +220,10 @@ def partyElection(election):
     totalVotes = 0;
 
     for vote in votes:
-        if (len(vote.reasonForInvalidity) == 0):
+        if (len(vote.reasonForInvalidity) != 0):
             invalidVotes.append({
                 "electionOfficialJmbg": vote.officialJmbg,
-                "ballotGuid": vote.id,
+                "ballotGuid": vote.guid,
                 "pollNumber": getParticipantPollNumber(vote.participantId, electionParticipants),
                 "reason": vote.reasonForInvalidity
             });
@@ -245,16 +246,34 @@ def partyElection(election):
 
     availableSeats = 250;
     quotients = copy.deepcopy(results);
+
     while (availableSeats > 0):
         currentMaxValue = -1;
         currentMaxId = "";
+
         for participantId in quotients:
-            if (quotients[participantId] > currentMaxValue):
+            if ((quotients[participantId] > currentMaxValue) or
+                ((quotients[participantId] == currentMaxValue) and (results[currentMaxId] < results[participantId]))):
                 currentMaxValue = quotients[participantId];
                 currentMaxId = participantId;
-            elif (quotients[participantId] == currentMaxValue):
-                if (len(currentMaxId) != 0 and results[currentMaxId] > results[participantId]):
-                    return False;
+
+        availableSeats -= 1;
+        seatsAllocated[currentMaxId] += 1;
+        quotients[currentMaxId] = results[currentMaxId] / (seatsAllocated[currentMaxId] + 1);
+
+    participantsResult = [];
+    for participantObject in participants:
+        seats = 0;
+        if (str(participantObject.id) in seatsAllocated):
+            seats = seatsAllocated[str(participantObject.id)];
+
+        participantsResult.append({
+            "pollNumber": getParticipantPollNumber(participantObject.id, electionParticipants),
+            "name": getParticipantName(participantObject.id, participants),
+            "result": seats
+        });
+
+    return jsonify(participans = participantsResult, invalidVotes = invalidVotes);
 
 @application.route("/getResults", methods = ["GET"])
 @roleCheck(role = "admin")
@@ -277,12 +296,18 @@ def getResults():
     else:
         return partyElection(election);
 
-@application.route("/vote", methods = ["POST"])
-@roleCheck(role = "official")
-def vote():
-    return False;
+@application.route("/emptyDatabase", methods = ["GET"])
+def emptyDatabase():
+    ElectionParticipant.query.delete();
+    Election.query.delete();
+    Vote.query.delete();
+    Participant.query.filter(Participant.id != Configuration.PARTICIPANT_FOR_VOTING_ID).delete();
+
+    database.session.commit();
+
+    return Response(status = 200);
 
 if (__name__ == "__main__"):
     database.init_app(application);
-    application.run(debug = True, port = 5001);
+    application.run(debug = True, port = 5000);
 

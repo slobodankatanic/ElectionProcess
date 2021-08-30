@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  electionProcessDB:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3307:3306
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+  redis:
+    image: redis
+    ports:
+      - 6380:6379

@@ -18,7 +18,7 @@ class Election (database.Model):
     end = database.Column(database.DateTime, nullable = False);
     type = database.Column(database.Integer, nullable = False); # 0 - parlam. 1 - presid.
 
-    votes = database.relationship("Vote", back_populates = "elections");
+    votes = database.relationship("Vote", back_populates = "election");
     participants = database.relationship("Participant", secondary = ElectionParticipant.__table__, back_populates = "elections");
 
 class Participant (database.Model):
@@ -34,7 +34,8 @@ class Participant (database.Model):
 class Vote (database.Model):
     __tablename__ = "votes";
 
-    id = database.Column(database.Integer, primary_key = True);
+    id = database.Column(database.Integer, primary_key=True);
+    guid = database.Column(database.String(256), nullable = False);
     officialJmbg = database.Column(database.String(13), nullable = False);
     electionId = database.Column(database.Integer, database.ForeignKey("elections.id"), nullable = False);
     participantId = database.Column(database.Integer, database.ForeignKey("participants.id"), nullable = False);

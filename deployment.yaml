@@ -9,10 +9,10 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 10s
       retries: 10
-    volumes:
-      - dbdata:/var/lib/mysql
-    networks:
-      - mynet
+#    volumes:
+#      - dbdata:/var/lib/mysql
+#    networks:
+#      - mynet
   authenticationDBMigraton:
     image: authenticationdbmigration
     environment:
@@ -20,8 +20,8 @@ services:
     depends_on:
       authenticationDB:
         condition: service_healthy
-    networks:
-      - mynet
+#    networks:
+#      - mynet
   authentication:
     image: authentication
     environment:
@@ -30,11 +30,11 @@ services:
       - authenticationDBMigraton
     ports:
       - 5002:5002
-    networks:
-      - mynet
+#    networks:
+#      - mynet
 
-volumes:
-  dbdata:
-
-networks:
-  mynet:
+#volumes:
+#  dbdata:
+#
+#networks:
+#  mynet:
