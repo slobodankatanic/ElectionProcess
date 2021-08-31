@@ -284,8 +284,9 @@ def partyElection(election):
         currentMaxId = "";
 
         for participantId in quotients:
-            if ((quotients[participantId] > currentMaxValue) or
-                ((quotients[participantId] == currentMaxValue) and (results[currentMaxId] <= results[participantId]))):
+            # if ((quotients[participantId] > currentMaxValue) or
+            #     ((quotients[participantId] == currentMaxValue) and (results[currentMaxId] <= results[participantId]))):
+            if (quotients[participantId] > currentMaxValue):
                 currentMaxValue = quotients[participantId];
                 currentMaxId = participantId;
 
