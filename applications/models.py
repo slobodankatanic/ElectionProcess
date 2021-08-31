@@ -28,7 +28,7 @@ class Participant (database.Model):
     name = database.Column(database.String(256), nullable = False);
     type = database.Column(database.Integer, nullable = False);  # 0 - party 1 - indiv.
 
-    votes = database.relationship("Vote", back_populates = "participant");
+    # votes = database.relationship("Vote", back_populates = "participant"); DEL
     elections = database.relationship("Election", secondary = ElectionParticipant.__table__, back_populates = "participants");
 
 class Vote (database.Model):
@@ -38,8 +38,11 @@ class Vote (database.Model):
     guid = database.Column(database.String(256), nullable = False);
     officialJmbg = database.Column(database.String(13), nullable = False);
     electionId = database.Column(database.Integer, database.ForeignKey("elections.id"), nullable = False);
-    participantId = database.Column(database.Integer, database.ForeignKey("participants.id"), nullable = False);
+    # participantId = database.Column(database.Integer, database.ForeignKey("participants.id"), nullable = False); DEL
+
+    pollNumber = database.Column(database.Integer, nullable = True); # DEL
+
     reasonForInvalidity = database.Column(database.String(256), default = "");
 
     election = database.relationship("Election", back_populates = "votes");
-    participant = database.relationship("Participant", back_populates = "votes");
+    # participant = database.relationship("Participant", back_populates = "votes"); DEL

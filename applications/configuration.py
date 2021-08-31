@@ -4,4 +4,4 @@ class Configuration:
     REDIS_HOST = "localhost";
     REDIS_VOTES_CHANNEL = "votes";
     JWT_SECRET_KEY = "MY_SECRET_KEY";
-    PARTICIPANT_FOR_VOTING_ID = 1000;
+    # PARTICIPANT_FOR_VOTING_ID = 1000;

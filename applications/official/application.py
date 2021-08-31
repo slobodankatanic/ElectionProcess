@@ -19,7 +19,7 @@ def vote():
     try:
         file = request.files["file"];
     except KeyError:
-        return jsonify(message = "Field file missing."), 400;
+        return jsonify(message = "Field file is missing."), 400;
 
     content = file.stream.read().decode("utf-8")
     stream = io.StringIO(content);
@@ -29,25 +29,28 @@ def vote():
     rowNumber = 0;
 
     for row in reader:
-        if (len(row) != 2):
-            return jsonify(message = f"Incorrect number of values on line {rowNumber}."), 400;
+        try:
+            if (len(row) != 2):
+                return jsonify(message = f"Incorrect number of values on line {rowNumber}."), 400;
 
-        GUID = row[0];
-        pollNumber = int(row[1]);
+            GUID = row[0];
+            pollNumber = int(row[1]);
 
-        if (pollNumber < 0):
-            return jsonify(message = f"Incorrect poll number on line {rowNumber}."), 400;
+            if (pollNumber <= 0):
+                return jsonify(message = f"Incorrect poll number on line {rowNumber}."), 400;
 
-        refreshClaims = get_jwt();
-        JMBG = refreshClaims["jmbg"];
+            refreshClaims = get_jwt();
+            JMBG = refreshClaims["jmbg"];
 
-        votes.append({
-            "GUID": GUID,
-            "JMBG": JMBG,
-            "pollNumber": str(pollNumber)
-        });
+            votes.append({
+                "GUID": GUID,
+                "JMBG": JMBG,
+                "pollNumber": str(pollNumber)
+            });
 
-        rowNumber += 1;
+            rowNumber += 1;
+        except Exception:
+            return jsonify(message=f"Incorrect poll number on line {rowNumber}."), 400;
 
     with Redis(host = Configuration.REDIS_HOST) as redis:
         redis.publish(Configuration.REDIS_VOTES_CHANNEL, str(votes));

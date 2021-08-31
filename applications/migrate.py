@@ -19,6 +19,6 @@ with application.app_context() as context:
     migrate(message = "First migration");
     upgrade();
 
-    participant = Participant(id = 1000, name = "__participant_for_invalid_votes__", type = 1);
-    database.session.add(participant);
-    database.session.commit();
+    # participant = Participant(id = 1000, name = "__participant_for_invalid_votes__", type = 1);
+    # database.session.add(participant);
+    # database.session.commit();

@@ -56,7 +56,7 @@
       <recent name="C:\Users\pc\Desktop\IEP_Projekat\applications" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.deamon">
+  <component name="RunManager" selected="Python.admin">
     <configuration name="admin" type="PythonConfigurationType" factoryName="Python">
       <module name="IEP_Projekat" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -241,7 +241,7 @@
       <workItem from="1630021347765" duration="6395000" />
       <workItem from="1630027993159" duration="3890000" />
       <workItem from="1630334774374" duration="1590000" />
-      <workItem from="1630336582471" duration="2236000" />
+      <workItem from="1630336582471" duration="17047000" />
     </task>
     <servers />
   </component>
@@ -249,10 +249,10 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/IEP_Projekat$deamon.coverage" NAME="deamon Coverage Results" MODIFIED="1630349223393" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/applications/deamon" />
-    <SUITE FILE_PATH="coverage/IEP_Projekat$official.coverage" NAME="official Coverage Results" MODIFIED="1630349210373" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/applications/official" />
+    <SUITE FILE_PATH="coverage/IEP_Projekat$deamon.coverage" NAME="deamon Coverage Results" MODIFIED="1630370644624" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/applications/deamon" />
+    <SUITE FILE_PATH="coverage/IEP_Projekat$official.coverage" NAME="official Coverage Results" MODIFIED="1630360862677" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/applications/official" />
     <SUITE FILE_PATH="coverage/IEP_Projekat$electionsMigrations.coverage" NAME="electionsMigrations Coverage Results" MODIFIED="1629930818200" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/applications" />
-    <SUITE FILE_PATH="coverage/IEP_Projekat$admin.coverage" NAME="admin Coverage Results" MODIFIED="1630348936641" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/applications/admin" />
-    <SUITE FILE_PATH="coverage/IEP_Projekat$migrate.coverage" NAME="migrate Coverage Results" MODIFIED="1630017305281" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/applications" />
+    <SUITE FILE_PATH="coverage/IEP_Projekat$admin.coverage" NAME="admin Coverage Results" MODIFIED="1630371028651" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/applications/admin" />
+    <SUITE FILE_PATH="coverage/IEP_Projekat$migrate.coverage" NAME="migrate Coverage Results" MODIFIED="1630360618080" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/applications" />
   </component>
 </project>

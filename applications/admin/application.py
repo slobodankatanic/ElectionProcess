@@ -5,6 +5,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, cr
 from applications.models import database, Participant, Election, ElectionParticipant, Vote;
 from applications.rightAccess import roleCheck;
 from datetime import datetime, timedelta;
+from dateutil import parser;
 import copy;
 
 application = Flask(__name__)
@@ -62,7 +63,8 @@ def checkISODateTime(dateTime):
     return True;
 
 def checkDateTimeRange(start, end):
-    if (start >= end or start < datetime.now()):
+    # if (start >= end or start < datetime.now()):
+    if (start >= end):
         return False;
 
     elections = Election.query.all();
@@ -95,21 +97,31 @@ def createElection():
     if (participantsEmpty):
         return jsonify(message = "Field participants is missing."), 400;
 
-    startValid = checkISODateTime(start);
-    endValid = checkISODateTime(end);
+    # startValid = checkISODateTime(start);
+    # endValid = checkISODateTime(end);
 
-    if ((not startValid) or (not endValid)):
-        return jsonify(message = "Invalid date and time."), 400;
+    # if ((not startValid) or (not endValid)):
+    #     return jsonify(message = "Invalid date and time."), 400;
 
-    if (not checkDateTimeRange(datetime.strptime(start, "%Y-%m-%dT%H:%M"),
-                               datetime.strptime(end, "%Y-%m-%dT%H:%M"))):
+    # if (not checkDateTimeRange(datetime.strptime(start, "%Y-%m-%dT%H:%M"),
+    #                            datetime.strptime(end, "%Y-%m-%dT%H:%M"))):
+    #     return jsonify(message="Invalid date and time."), 400;
+
+    try:
+        # if (not checkDateTimeRange(datetime.fromisoformat(start),
+        #                            datetime.fromisoformat(end))):
+        #     return jsonify(message = "Invalid date and time."), 400;
+        if (not checkDateTimeRange(parser.parse(start),
+                                   parser.parse(end))):
+            return jsonify(message = "Invalid date and time."), 400;
+    except Exception:
         return jsonify(message = "Invalid date and time."), 400;
 
     if (not isinstance(participants, list)):
-        return jsonify(message = "Invalid participant."), 400;
+        return jsonify(message = "Invalid participants."), 400;
 
     if (len(participants) < 2):
-        return jsonify(message = "Invalid participant."), 400;
+        return jsonify(message = "Invalid participants."), 400;
 
     type = 0;
     if (individual):
@@ -118,7 +130,7 @@ def createElection():
     for participantId in participants:
         participantObject = Participant.query.filter(Participant.id == participantId).first();
         if ((not participantObject) or (type != participantObject.type)):
-            return jsonify(message = "Invalid participant."), 400;
+            return jsonify(message = "Invalid participants."), 400;
 
     election = Election(start = start, end = end, type = type);
     database.session.add(election);
@@ -150,11 +162,15 @@ def getElections():
                 "name": participant.name
             });
 
+        individual = False;
+        if (election.type == 1):
+            individual = True;
+
         elections.append({
            "id": election.id,
-           "start": election.start,
-           "end": election.end,
-           "individual": election.type == 1,
+           "start": election.start.isoformat(),
+           "end": election.end.isoformat(),
+           "individual": individual,
            "participants": participants
         });
 
@@ -170,6 +186,11 @@ def getParticipantName(participantId, participants):
         if (participant.id == participantId):
             return participant.name;
 
+def getParticipantId(pollNumber, electionParticipants):
+    for electionParticipant in electionParticipants:
+        if (electionParticipant.pollNumber == pollNumber):
+            return electionParticipant.participantId;
+
 def presidentialElection(election):
     votes = election.votes;
     participants = election.participants;
@@ -184,16 +205,24 @@ def presidentialElection(election):
             invalidVotes.append({
                "electionOfficialJmbg": vote.officialJmbg,
                "ballotGuid": vote.guid,
-               "pollNumber": getParticipantPollNumber(vote.participantId, electionParticipants),
+               # "pollNumber": getParticipantPollNumber(vote.participantId, electionParticipants),
+                "pollNumber": vote.pollNumber,
                "reason": vote.reasonForInvalidity
             });
         else:
             totalVotes += 1;
 
-            if (not (str(vote.participant.id) in results)):
-                results[str(vote.participant.id)] = 1;
+            # if (not (str(vote.participant.id) in results)):
+            #     results[str(vote.participant.id)] = 1;
+            # else:
+            #     results[str(vote.participant.id)] += 1;
+
+            participantString = str(getParticipantId(vote.pollNumber, electionParticipants));
+
+            if (not (participantString in results)):
+                results[participantString] = 1;
             else:
-                results[str(vote.participant.id)] += 1;
+                results[participantString] += 1;
 
 
     participantsResult = [];
@@ -208,7 +237,7 @@ def presidentialElection(election):
             "result": result
         });
 
-    return jsonify(participans = participantsResult, invalidVotes = invalidVotes);
+    return jsonify(participants = participantsResult, invalidVotes = invalidVotes);
 
 def partyElection(election):
     votes = election.votes;
@@ -224,16 +253,19 @@ def partyElection(election):
             invalidVotes.append({
                 "electionOfficialJmbg": vote.officialJmbg,
                 "ballotGuid": vote.guid,
-                "pollNumber": getParticipantPollNumber(vote.participantId, electionParticipants),
+                # "pollNumber": getParticipantPollNumber(vote.participantId, electionParticipants),
+                "pollNumber": vote.pollNumber,
                 "reason": vote.reasonForInvalidity
             });
         else:
             totalVotes += 1;
 
-            if (not (str(vote.participant.id) in results)):
-                results[str(vote.participant.id)] = 1;
+            participantString = str(getParticipantId(vote.pollNumber, electionParticipants));
+
+            if (not (participantString in results)):
+                results[participantString] = 1;
             else:
-                results[str(vote.participant.id)] += 1;
+                results[participantString] += 1;
 
     seatsAllocated = {};
     treshold = 0.05 * float(totalVotes);
@@ -253,7 +285,7 @@ def partyElection(election):
 
         for participantId in quotients:
             if ((quotients[participantId] > currentMaxValue) or
-                ((quotients[participantId] == currentMaxValue) and (results[currentMaxId] < results[participantId]))):
+                ((quotients[participantId] == currentMaxValue) and (results[currentMaxId] <= results[participantId]))):
                 currentMaxValue = quotients[participantId];
                 currentMaxId = participantId;
 
@@ -273,7 +305,7 @@ def partyElection(election):
             "result": seats
         });
 
-    return jsonify(participans = participantsResult, invalidVotes = invalidVotes);
+    return jsonify(participants = participantsResult, invalidVotes = invalidVotes);
 
 @application.route("/getResults", methods = ["GET"])
 @roleCheck(role = "admin")
@@ -299,9 +331,9 @@ def getResults():
 @application.route("/emptyDatabase", methods = ["GET"])
 def emptyDatabase():
     ElectionParticipant.query.delete();
-    Election.query.delete();
     Vote.query.delete();
-    Participant.query.filter(Participant.id != Configuration.PARTICIPANT_FOR_VOTING_ID).delete();
+    Election.query.delete();
+    Participant.query.delete();
 
     database.session.commit();
 

@@ -11,7 +11,7 @@ def roleCheck(role):
             if (("roles" in claims) and (role in claims["roles"])):
                 return function(*args, **kwargs);
             else:
-                return jsonify(msg = "Access denied."), 403;
+                return jsonify(msg = "Missing Authorization Header"), 401;
 
         return decorator;
 

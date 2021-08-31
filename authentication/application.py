@@ -17,26 +17,28 @@ def checkJMBG(jmbg):
 
     day = int(jmbg[0:2]);
     if (day > 31 or day < 1):
+        print("day");
         return False;
 
     month = int(jmbg[2:4]);
     if (month > 31 or month < 1):
+        print("month");
         return False;
 
     region = int(jmbg[7:9]);
     if (region > 99 or region < 70):
         return False;
 
-    # control = int(jmbg[12]);
-    # realControl = (7 * (int(jmbg[0]) + int(jmbg[6])) + 6 * (int(jmbg[1]) + int(jmbg[7])) +
-    #                5 * (int(jmbg[2]) + int(jmbg[8])) + 4 * (int(jmbg[3]) + int(jmbg[9])) +
-    #                3 * (int(jmbg[4]) + int(jmbg[10])) + 2 * (int(jmbg[5]) + int(jmbg[11]))) % 11;
-    # if (realControl <= 9):
-    #     if (control != realControl):
-    #         return False;
-    # else:
-    #     if (realControl != 0):
-    #         return False;
+    control = int(jmbg[12]);
+    realControl = 11 - (7 * (int(jmbg[0]) + int(jmbg[6])) + 6 * (int(jmbg[1]) + int(jmbg[7])) +
+                   5 * (int(jmbg[2]) + int(jmbg[8])) + 4 * (int(jmbg[3]) + int(jmbg[9])) +
+                   3 * (int(jmbg[4]) + int(jmbg[10])) + 2 * (int(jmbg[5]) + int(jmbg[11]))) % 11;
+    if (realControl <= 9):
+        if (control != realControl):
+            return False;
+    else:
+        if (control != 0):
+            return False;
 
     return True;
 
@@ -155,7 +157,7 @@ def refresh():
         "roles": refreshClaims["roles"]
     };
 
-    return Response(create_access_token(identity = identity, additional_claims = additionalClaims), status = 200);
+    return jsonify(accessToken = create_access_token(identity = identity, additional_claims = additionalClaims)), 200;
 
 @application.route("/", methods = ["GET"])
 def index():
@@ -173,9 +175,9 @@ def deleteUser():
 
     emailRegex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b';
     if (not re.fullmatch(emailRegex, email)):
-        return jsonify(message="Invalid email."), 400;
+        return jsonify(message = "Invalid email."), 400;
 
-    user = User.query.filter(and_(User.email == email)).first();
+    user = User.query.filter(User.email == email).first();
 
     if (not user):
         return jsonify(message = "Unknown user."), 400;

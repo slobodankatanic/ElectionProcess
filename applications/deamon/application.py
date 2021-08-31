@@ -52,16 +52,21 @@ with application.app_context() as context:
             if (message is None):
                 continue;
 
+            print("malo preee")
+
             data = str(message["data"])[2:-1];
             votes = json.loads(data.replace("'", '"'));
 
             print(votes);
 
+            print("pre")
+
             election = getElectionOngoing()
             if (election == None):
+                print("nema tren")
                 continue;
 
-            print("Glasanje");
+            print("pocelo glasanje")
 
             votesForInsertion = [];
             allVotes = Vote.query.all();
@@ -72,17 +77,17 @@ with application.app_context() as context:
                 JMBG = vote["JMBG"];
                 pollNumber = int(vote["pollNumber"]);
                 reasonForInvalidity = "";
-                participantId = Configuration.PARTICIPANT_FOR_VOTING_ID;
+                # participantId = Configuration.PARTICIPANT_FOR_VOTING_ID;
 
                 if (not checkVote(GUID, votesForInsertion, allVotes)):
                     reasonForInvalidity = "Duplicate ballot.";
                 elif (not checkPollNumber(pollNumber, electionParticipants)):
                     reasonForInvalidity = "Invalid poll number.";
-                else:
-                    participantId = getParticipantId(pollNumber, election.id, electionParticipants);
+                # else:
+                #     participantId = getParticipantId(pollNumber, election.id, electionParticipants);
 
                 newVote = Vote(guid = GUID, officialJmbg = JMBG, electionId = election.id,
-                               participantId = participantId, reasonForInvalidity = reasonForInvalidity);
+                               pollNumber = pollNumber, reasonForInvalidity = reasonForInvalidity);
 
                 votesForInsertion.append(newVote);
 
