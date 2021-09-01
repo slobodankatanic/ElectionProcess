@@ -1,10 +1,8 @@
 from flask import Flask, request, Response, jsonify;
-from applications.configuration import Configuration;
-from email.utils import parseaddr;
-from sqlalchemy import and_;
+from configuration import Configuration;
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, create_refresh_token, get_jwt, get_jwt_identity;
-from applications.models import database, Vote;
-from applications.rightAccess import roleCheck;
+from models import database, Vote;
+from rightAccess import roleCheck;
 import csv;
 import io;
 from redis import Redis;
@@ -50,7 +48,7 @@ def vote():
 
             rowNumber += 1;
         except Exception:
-            return jsonify(message=f"Incorrect poll number on line {rowNumber}."), 400;
+            return jsonify(message = f"Incorrect poll number on line {rowNumber}."), 400;
 
     with Redis(host = Configuration.REDIS_HOST) as redis:
         redis.publish(Configuration.REDIS_VOTES_CHANNEL, str(votes));
@@ -59,4 +57,4 @@ def vote():
 
 if (__name__ == "__main__"):
     database.init_app(application);
-    application.run(debug = True, port = 5001);
+    application.run(debug = True, host = "0.0.0.0", port = 5001);

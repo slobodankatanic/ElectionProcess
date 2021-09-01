@@ -1,9 +1,9 @@
 from flask import Flask, request, Response, jsonify;
-from applications.configuration import Configuration;
+from configuration import Configuration;
 from sqlalchemy import and_;
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, create_refresh_token, get_jwt, get_jwt_identity;
-from applications.models import database, Participant, Election, ElectionParticipant, Vote;
-from applications.rightAccess import roleCheck;
+from models import database, Participant, Election, ElectionParticipant, Vote;
+from rightAccess import roleCheck;
 from datetime import datetime, timedelta;
 from dateutil import parser;
 import copy;
@@ -321,7 +321,7 @@ def getResults():
     if (not election):
         return jsonify(message = "Election does not exist."), 400;
 
-    if (datetime.now() < election.end):
+    if ((datetime.now() + timedelta(hours = 2)) < election.end):
         return jsonify(message = "Election is ongoing."), 400;
 
     if (election.type == 1):
@@ -342,5 +342,5 @@ def emptyDatabase():
 
 if (__name__ == "__main__"):
     database.init_app(application);
-    application.run(debug = True, port = 5000);
+    application.run(debug = True, host = "0.0.0.0", port = 5000);
 

@@ -1,0 +1,87 @@
+version: '3'
+
+services:
+  authenticationDB:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_TCP_PORT=3307
+#    healthcheck:
+#      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+#      timeout: 10s
+#      retries: 10
+#    volumes:
+#      - dbauthTesting:/var/lib/mysql
+#    networks:
+#      - mynet
+  authenticationDBMigraton:
+    image: authenticationdbmigration
+    environment:
+      - AUTHENTICATION_DATABASE_URL=authenticationDB:3307
+#    depends_on:
+#      authenticationDB:
+#        condition: service_healthy
+#    networks:
+#      - mynet
+  authentication:
+    image: authentication
+    environment:
+      - AUTHENTICATION_DATABASE_URL=authenticationDB:3307
+#    depends_on:
+#      - authenticationDBMigraton
+    ports:
+      - 5002:5002
+  electionProcessDB:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_TCP_PORT=3309
+#    healthcheck:
+#      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+#      timeout: 10s
+#      retries: 10
+#    volumes:
+#      - dbelectTesting:/var/lib/mysql
+  electionProcessDBMigraton:
+    image: electionprocessdbmigration
+    environment:
+      - ELECTION_PROCESS_DATABASE_URL=electionProcessDB:3309
+      - REDIS_HOST=redis
+#    depends_on:
+#      electionProcessDB:
+#        condition: service_healthy
+  admin:
+    image: admin
+    environment:
+      - ELECTION_PROCESS_DATABASE_URL=electionProcessDB:3309
+      - REDIS_HOST=redis
+#    depends_on:
+#      - electionProcessDBMigraton
+#      - authentication
+    ports:
+      - 5000:5000
+  official:
+    image: official
+    environment:
+      - ELECTION_PROCESS_DATABASE_URL=electionProcessDB:3309
+      - REDIS_HOST=redis
+#    depends_on:
+#      - deamon
+    ports:
+      - 5001:5001
+  deamon:
+    image: deamon
+    environment:
+      - ELECTION_PROCESS_DATABASE_URL=electionProcessDB:3309
+      - REDIS_HOST=redis
+#    depends_on:
+#      - admin
+  redis:
+    image: redis
+
+#volumes:
+#  dbauthTesting:
+#  dbelectTesting:
+
+#networks:
+#  mynet:

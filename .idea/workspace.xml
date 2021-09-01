@@ -31,10 +31,10 @@
     <setting file="file://$PROJECT_DIR$/authentication/migrate.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/applications/migrate.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/authentication/application.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/applications/official/application.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/applications/deamon/application.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/applications/official.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/applications/deamon.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/applications/configuration.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/applications/admin/application.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/applications/admin.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/applications/models.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="1x83OWKSRQ59dpEeqm2ED7Q5N18" />
@@ -46,17 +46,17 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/deployment.yaml" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/deploymentForTesting.yaml" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\pc\Desktop\IEP_Projekat\applications" />
       <recent name="C:\Users\pc\Desktop\IEP_Projekat" />
       <recent name="C:\Users\pc\Desktop\IEP_Projekat\applications\tests" />
-      <recent name="C:\Users\pc\Desktop\IEP_Projekat\applications" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.deamon">
+  <component name="RunManager" selected="Docker.deploymentForTesting">
     <configuration name="admin" type="PythonConfigurationType" factoryName="Python">
       <module name="IEP_Projekat" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -70,7 +70,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/applications/admin/application.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\pc\Desktop\IEP_Projekat\applications\admin.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -92,7 +92,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/applications/deamon/application.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\pc\Desktop\IEP_Projekat\applications\deamon.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -158,13 +158,24 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/applications/official/application.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\pc\Desktop\IEP_Projekat\applications\official.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
       <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="adminImage" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="imageTag" value="admin" />
+          <option name="buildOnly" value="true" />
+          <option name="containerName" value="" />
+          <option name="sourceFilePath" value="admin.dockerfile" />
+        </settings>
+      </deployment>
       <method v="2" />
     </configuration>
     <configuration name="authenticationDBMigration" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
@@ -189,11 +200,33 @@
       </deployment>
       <method v="2" />
     </configuration>
+    <configuration name="deamonImage" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="imageTag" value="deamon" />
+          <option name="buildOnly" value="true" />
+          <option name="containerName" value="" />
+          <option name="sourceFilePath" value="deamon.dockerfile" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <configuration name="deployment" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
       <deployment type="docker-compose.yml">
         <settings>
           <option name="envFilePath" value="" />
           <option name="sourceFilePath" value="deployment.yaml" />
+          <option name="upExitCodeFromService" value="" />
+          <option name="upTimeout" value="" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="deploymentForTesting" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="envFilePath" value="" />
+          <option name="sourceFilePath" value="deploymentForTesting.yaml" />
           <option name="upExitCodeFromService" value="" />
           <option name="upTimeout" value="" />
         </settings>
@@ -211,11 +244,38 @@
       </deployment>
       <method v="2" />
     </configuration>
+    <configuration name="electionProcessDBMigration" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="imageTag" value="electionprocessdbmigration" />
+          <option name="buildOnly" value="true" />
+          <option name="containerName" value="" />
+          <option name="sourceFilePath" value="electionProcessDBMigration.dockerfile" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="officialImage" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="imageTag" value="official" />
+          <option name="buildOnly" value="true" />
+          <option name="containerName" value="" />
+          <option name="sourceFilePath" value="official.dockerfile" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <list>
+      <item itemvalue="Docker.adminImage" />
+      <item itemvalue="Docker.officialImage" />
+      <item itemvalue="Docker.deamonImage" />
+      <item itemvalue="Docker.deploymentForTesting" />
       <item itemvalue="Docker.deployment" />
       <item itemvalue="Docker.development" />
       <item itemvalue="Docker.authenticationImage" />
       <item itemvalue="Docker.authenticationDBMigration" />
+      <item itemvalue="Docker.electionProcessDBMigration" />
       <item itemvalue="Python.electionsMigrations" />
       <item itemvalue="Python.admin" />
       <item itemvalue="Python.official" />
@@ -242,7 +302,8 @@
       <workItem from="1630027993159" duration="3890000" />
       <workItem from="1630334774374" duration="1590000" />
       <workItem from="1630336582471" duration="17047000" />
-      <workItem from="1630434354670" duration="1990000" />
+      <workItem from="1630434354670" duration="17743000" />
+      <workItem from="1630468534203" duration="1643000" />
     </task>
     <servers />
   </component>

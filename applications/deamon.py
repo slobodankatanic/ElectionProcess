@@ -1,8 +1,8 @@
 from flask import Flask;
 from redis import Redis;
-from applications.configuration import Configuration;
-from applications.models import database, Election, ElectionParticipant, Vote, Participant;
-from datetime import datetime;
+from configuration import Configuration;
+from models import database, Election, ElectionParticipant, Vote, Participant;
+from datetime import datetime, timedelta;
 import json;
 
 application = Flask(__name__);
@@ -13,7 +13,7 @@ def getElectionOngoing():
     elections = Election.query.all();
 
     for election in elections:
-        if (election.start <= datetime.now() and election.end > datetime.now()):
+        if (election.start <= (datetime.now() + timedelta(hours = 2)) and election.end > (datetime.now() + timedelta(hours = 2))):
             return election;
 
     return None;
