@@ -4,6 +4,8 @@ from configuration import Configuration;
 from models import database, Election, ElectionParticipant, Vote, Participant;
 from datetime import datetime, timedelta;
 import json;
+from sqlalchemy import and_;
+import time;
 
 application = Flask(__name__);
 application.config.from_object(Configuration);
@@ -11,9 +13,8 @@ database.init_app(application);
 
 def getElectionOngoing():
     elections = Election.query.all();
-
     for election in elections:
-        if (election.start <= (datetime.now() + timedelta(hours = 2)) and election.end > (datetime.now() + timedelta(hours = 2))):
+        if (election.start <= (datetime.now().replace(microsecond = 0) + timedelta(hours = 2, seconds = 1)) and election.end >= (datetime.now().replace(microsecond = 0) + timedelta(hours = 2, seconds = 1))):
             return election;
 
     return None;
@@ -43,53 +44,63 @@ def getParticipantId(pollNumber, electionId, electionParticipants):
 
 with application.app_context() as context:
     with Redis(host = Configuration.REDIS_HOST) as redis:
-        channel = redis.pubsub();
-        channel.subscribe(Configuration.REDIS_VOTES_CHANNEL);
+        # channel = redis.pubsub();
+        # channel.subscribe(Configuration.REDIS_VOTES_CHANNEL);
 
         while (True):
-            message = channel.get_message(True);
+            message = redis.rpop(Configuration.REDIS_VOTES_CHANNEL);
+            # message = channel.get_message(True);
 
             if (message is None):
                 continue;
 
-            print("malo preee")
-
-            data = str(message["data"])[2:-1];
-            votes = json.loads(data.replace("'", '"'));
-
-            print(votes);
-
-            print("pre")
+            # data = str(message["data"])[2:-1];
+            # votes = json.loads(data.replace("'", '"'));
+            message = message.decode("utf-8");
+            # vote = json.loads(message.replace("'", '"'));
+            votes = json.loads(message.replace("'", '"'));
+            print(len(votes));
+            print(datetime.now());
 
             election = getElectionOngoing()
             if (election == None):
-                print("nema tren")
+                # print(datetime.now() + timedelta(hours = 2));
                 continue;
+            # print(vote);
+            # print(election.id);
+            # print(datetime.now() + timedelta(hours=2));
 
-            print("pocelo glasanje")
-
-            votesForInsertion = [];
-            allVotes = Vote.query.all();
-            electionParticipants = ElectionParticipant.query.filter(ElectionParticipant.electionId == election.id).all();
+            # votesForInsertion = [];
+            # allVotes = Vote.query.all();
+            # electionParticipants = ElectionParticipant.query.filter(ElectionParticipant.electionId == election.id).all();
 
             for vote in votes:
                 GUID = vote["GUID"];
                 JMBG = vote["JMBG"];
                 pollNumber = int(vote["pollNumber"]);
                 reasonForInvalidity = "";
-                # participantId = Configuration.PARTICIPANT_FOR_VOTING_ID;
 
-                if (not checkVote(GUID, votesForInsertion, allVotes)):
+                # added
+                duplicateVote = Vote.query.filter(Vote.guid == GUID).first();
+                pollNumberExists = ElectionParticipant.query.filter(and_(ElectionParticipant.electionId == election.id, ElectionParticipant.pollNumber == pollNumber)).first();
+
+                if (duplicateVote):
                     reasonForInvalidity = "Duplicate ballot.";
-                elif (not checkPollNumber(pollNumber, electionParticipants)):
+                # elif (not checkPollNumber(pollNumber, electionParticipants)):
+                elif (not pollNumberExists):
                     reasonForInvalidity = "Invalid poll number.";
-                # else:
-                #     participantId = getParticipantId(pollNumber, election.id, electionParticipants);
+                # added
+
+                # if (not checkVote(GUID, votesForInsertion, allVotes)):
+                #     reasonForInvalidity = "Duplicate ballot.";
+                # elif (not checkPollNumber(pollNumber, electionParticipants)):
+                #     reasonForInvalidity = "Invalid poll number.";
 
                 newVote = Vote(guid = GUID, officialJmbg = JMBG, electionId = election.id,
                                pollNumber = pollNumber, reasonForInvalidity = reasonForInvalidity);
 
-                votesForInsertion.append(newVote);
+                # votesForInsertion.append(newVote);
 
-            database.session.add_all(votesForInsertion);
-            database.session.commit();
+                # database.session.add_all(votesForInsertion);
+                database.session.add(newVote);
+                database.session.commit();

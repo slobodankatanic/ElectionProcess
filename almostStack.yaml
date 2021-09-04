@@ -12,8 +12,8 @@ services:
 #      retries: 10
     volumes:
       - dbauthTesting:/var/lib/mysql
-  networks:
-    - authNetTesting
+    networks:
+      - authNetTesting
   authenticationDBMigraton:
     image: authenticationdbmigration
     environment:
@@ -80,8 +80,6 @@ services:
     networks:
       - officialNetTesting
       - adminNetTesting
-    deploy:
-      replicas: 3
   deamon:
     image: deamon
     environment:
@@ -96,6 +94,12 @@ services:
     image: redis
     networks:
       - officialNetTesting
+  adminer:
+    image: adminer
+    networks:
+      - authNetTesting
+      - officialNetTesting
+      - adminNetTesting
 
 volumes:
   dbauthTesting:
@@ -103,8 +107,5 @@ volumes:
 
 networks:
   authNetTesting:
-    driver: overlay
   officialNetTesting:
-    driver: overlay
   adminNetTesting:
-    driver: overlay

@@ -51,7 +51,11 @@ def vote():
             return jsonify(message = f"Incorrect poll number on line {rowNumber}."), 400;
 
     with Redis(host = Configuration.REDIS_HOST) as redis:
-        redis.publish(Configuration.REDIS_VOTES_CHANNEL, str(votes));
+        # redis.publish(Configuration.REDIS_VOTES_CHANNEL, str(votes));
+        # for vote in votes:
+        #     # redis.publish(Configuration.REDIS_VOTES_CHANNEL, str(vote));
+        #     redis.lpush(Configuration.REDIS_VOTES_CHANNEL, str(vote));
+        redis.lpush(Configuration.REDIS_VOTES_CHANNEL, str(votes));
 
     return Response(status = 200);
 

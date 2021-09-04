@@ -1,8 +1,9 @@
 from flask import Flask;
 from configuration import Configuration;
-from flask_migrate import Migrate, init, migrate, upgrade;
+from flask_migrate import Migrate, init, migrate, upgrade, stamp;
 from models import database, Role, UserRole, User;
 from sqlalchemy_utils import create_database, database_exists;
+import os;
 
 application = Flask(__name__);
 application.config.from_object(Configuration);
@@ -18,36 +19,51 @@ while (not done):
         database.init_app(application);
 
         with application.app_context() as context:
-            init();
-            migrate(message = "First migration");
+            try:
+                if (not os.path.isdir("migrations")):
+                    init();
+            except Exception as exception:
+                print(exception);
+
+            stamp();
+            migrate(message="First migration");
             upgrade();
 
-            adminRole = Role(name = "admin");
-            userRole = Role(name = "official");
+            adminRoleExists = Role.query.filter(Role.name == "admin").first();
+            userRoleExists = Role.query.filter(Role.name == "official").first();
 
-            database.session.add(adminRole);
-            database.session.add(userRole);
-            database.session.commit();
+            if (not adminRoleExists):
+                adminRole = Role(name = "admin");
+                database.session.add(adminRole);
+                database.session.commit();
 
-            admin = User(
-                jmbg = "0000000000000",
-                email = "admin@admin.com",
-                password = "1",
-                forename = "admin",
-                surname = "admin"
-            );
+            if (not userRoleExists):
+                userRole = Role(name = "official");
+                database.session.add(userRole);
+                database.session.commit();
 
-            database.session.add(admin);
-            database.session.commit();
+            adminExists = User.query.filter(User.email == "admin@admin.com").first();
 
-            userRole = UserRole(
-                userId = admin.id,
-                roleId = adminRole.id
-            );
+            if (not adminExists):
+                admin = User(
+                    jmbg = "0000000000000",
+                    email = "admin@admin.com",
+                    password = "1",
+                    forename = "admin",
+                    surname = "admin"
+                );
 
-            database.session.add(userRole);
-            database.session.commit();
+                database.session.add(admin);
+                database.session.commit();
 
-        done = True;
+                userRole = UserRole(
+                    userId = admin.id,
+                    roleId = adminRole.id
+                );
+
+                database.session.add(userRole);
+                database.session.commit();
+
+            done = True;
     except Exception as exception:
         print(exception);

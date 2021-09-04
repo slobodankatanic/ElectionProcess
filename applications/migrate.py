@@ -1,8 +1,9 @@
 from flask import Flask
-from flask_migrate import Migrate, migrate, init, upgrade;
+from flask_migrate import Migrate, migrate, init, upgrade, stamp;
 from configuration import Configuration
 from models import database, Participant;
 from sqlalchemy_utils import database_exists, create_database;
+import os;
 
 application = Flask(__name__);
 application.config.from_object(Configuration);
@@ -18,7 +19,13 @@ while (not done):
         database.init_app(application);
 
         with application.app_context() as context:
-            init();
+            try:
+                if (not os.path.isdir("migrations")):
+                    init();
+            except Exception as exception:
+                print(exception);
+
+            stamp();
             migrate(message = "First migration");
             upgrade();
 
@@ -26,6 +33,6 @@ while (not done):
             # database.session.add(participant);
             # database.session.commit();
 
-        done = True;
+            done = True;
     except Exception as exception:
         print(exception);

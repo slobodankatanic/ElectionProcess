@@ -46,7 +46,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/deploymentForTesting.yaml" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -56,7 +56,7 @@
       <recent name="C:\Users\pc\Desktop\IEP_Projekat\applications\tests" />
     </key>
   </component>
-  <component name="RunManager" selected="Docker.deploymentForTesting">
+  <component name="RunManager" selected="Docker.almostStack">
     <configuration name="admin" type="PythonConfigurationType" factoryName="Python">
       <module name="IEP_Projekat" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -178,6 +178,17 @@
       </deployment>
       <method v="2" />
     </configuration>
+    <configuration name="almostStack" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="envFilePath" value="" />
+          <option name="sourceFilePath" value="almostStack.yaml" />
+          <option name="upExitCodeFromService" value="" />
+          <option name="upTimeout" value="" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <configuration name="authenticationDBMigration" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
       <deployment type="dockerfile">
         <settings>
@@ -226,7 +237,7 @@
       <deployment type="docker-compose.yml">
         <settings>
           <option name="envFilePath" value="" />
-          <option name="sourceFilePath" value="deploymentForTesting.yaml" />
+          <option name="sourceFilePath" value="docker-compose.yaml" />
           <option name="upExitCodeFromService" value="" />
           <option name="upTimeout" value="" />
         </settings>
@@ -270,8 +281,9 @@
       <item itemvalue="Docker.adminImage" />
       <item itemvalue="Docker.officialImage" />
       <item itemvalue="Docker.deamonImage" />
-      <item itemvalue="Docker.deploymentForTesting" />
       <item itemvalue="Docker.deployment" />
+      <item itemvalue="Docker.deploymentForTesting" />
+      <item itemvalue="Docker.almostStack" />
       <item itemvalue="Docker.development" />
       <item itemvalue="Docker.authenticationImage" />
       <item itemvalue="Docker.authenticationDBMigration" />
@@ -304,6 +316,17 @@
       <workItem from="1630336582471" duration="17047000" />
       <workItem from="1630434354670" duration="17743000" />
       <workItem from="1630468534203" duration="1643000" />
+      <workItem from="1630519187467" duration="4758000" />
+      <workItem from="1630524885795" duration="983000" />
+      <workItem from="1630538937554" duration="2459000" />
+      <workItem from="1630541476980" duration="377000" />
+      <workItem from="1630542234855" duration="1303000" />
+      <workItem from="1630577471908" duration="18697000" />
+      <workItem from="1630666723998" duration="1542000" />
+      <workItem from="1630676010263" duration="12816000" />
+      <workItem from="1630696735654" duration="39000" />
+      <workItem from="1630710467680" duration="8740000" />
+      <workItem from="1630720631548" duration="1026000" />
     </task>
     <servers />
   </component>

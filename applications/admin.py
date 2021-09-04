@@ -321,8 +321,11 @@ def getResults():
     if (not election):
         return jsonify(message = "Election does not exist."), 400;
 
-    if ((datetime.now() + timedelta(hours = 2)) < election.end):
+    if ((datetime.now().replace(microsecond = 0) + timedelta(hours = 2, seconds = 5)) < election.end):
         return jsonify(message = "Election is ongoing."), 400;
+        # now = datetime.now() + timedelta(hours = 2);
+        # endara = election.end;
+        # return jsonify(participants = [now, endara], invalidVotes = []);
 
     if (election.type == 1):
         return presidentialElection(election);
