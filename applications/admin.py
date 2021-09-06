@@ -345,5 +345,5 @@ def emptyDatabase():
 
 if (__name__ == "__main__"):
     database.init_app(application);
-    application.run(debug = True, host = "0.0.0.0", port = 5000);
+    application.run(debug = True, host = "0.0.0.0", port = 5003);
 

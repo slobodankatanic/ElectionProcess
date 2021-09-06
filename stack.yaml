@@ -6,14 +6,14 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_TCP_PORT=3307
-#    healthcheck:
-#      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-#      timeout: 10s
-#      retries: 10
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
     volumes:
-      - dbauthTesting:/var/lib/mysql
-  networks:
-    - authNetTesting
+      - dbauth:/var/lib/mysql
+    networks:
+      - authNet
   authenticationDBMigraton:
     image: authenticationdbmigration
     environment:
@@ -22,7 +22,7 @@ services:
 #      authenticationDB:
 #        condition: service_healthy
     networks:
-      - authNetTesting
+      - authNet
   authentication:
     image: authentication
     environment:
@@ -32,20 +32,20 @@ services:
     ports:
       - 5002:5002
     networks:
-      - authNetTesting
+      - authNet
   electionProcessDB:
     image: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_TCP_PORT=3309
-#    healthcheck:
-#      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-#      timeout: 10s
-#      retries: 10
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 10s
+      retries: 10
     volumes:
-      - dbelectTesting:/var/lib/mysql
+      - dbelect:/var/lib/mysql
     networks:
-      - adminNetTesting
+      - adminNet
   electionProcessDBMigraton:
     image: electionprocessdbmigration
     environment:
@@ -55,7 +55,7 @@ services:
 #      electionProcessDB:
 #        condition: service_healthy
     networks:
-      - adminNetTesting
+      - adminNet
   admin:
     image: admin
     environment:
@@ -65,9 +65,9 @@ services:
 #      - electionProcessDBMigraton
 #      - authentication
     ports:
-      - 5000:5000
+      - 5003:5003
     networks:
-      - adminNetTesting
+      - adminNet
   official:
     image: official
     environment:
@@ -78,8 +78,8 @@ services:
     ports:
       - 5001:5001
     networks:
-      - officialNetTesting
-      - adminNetTesting
+      - officialNet
+      - adminNet
     deploy:
       replicas: 3
   deamon:
@@ -90,21 +90,21 @@ services:
 #    depends_on:
 #      - admin
     networks:
-      - officialNetTesting
-      - adminNetTesting
+      - officialNet
+      - adminNet
   redis:
     image: redis
     networks:
-      - officialNetTesting
+      - officialNet
 
 volumes:
-  dbauthTesting:
-  dbelectTesting:
+  dbauth:
+  dbelect:
 
 networks:
-  authNetTesting:
+  authNet:
     driver: overlay
-  officialNetTesting:
+  officialNet:
     driver: overlay
-  adminNetTesting:
+  adminNet:
     driver: overlay

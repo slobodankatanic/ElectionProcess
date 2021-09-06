@@ -51,12 +51,12 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\pc\Desktop\IEP_Projekat\applications" />
       <recent name="C:\Users\pc\Desktop\IEP_Projekat" />
+      <recent name="C:\Users\pc\Desktop\IEP_Projekat\applications" />
       <recent name="C:\Users\pc\Desktop\IEP_Projekat\applications\tests" />
     </key>
   </component>
-  <component name="RunManager" selected="Docker.almostStack">
+  <component name="RunManager" selected="Docker.deploymentForTesting">
     <configuration name="admin" type="PythonConfigurationType" factoryName="Python">
       <module name="IEP_Projekat" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -326,7 +326,13 @@
       <workItem from="1630676010263" duration="12816000" />
       <workItem from="1630696735654" duration="39000" />
       <workItem from="1630710467680" duration="8740000" />
-      <workItem from="1630720631548" duration="1026000" />
+      <workItem from="1630720631548" duration="2732000" />
+      <workItem from="1630759844604" duration="949000" />
+      <workItem from="1630785078063" duration="116000" />
+      <workItem from="1630785235766" duration="756000" />
+      <workItem from="1630849595559" duration="1024000" />
+      <workItem from="1630851271485" duration="1248000" />
+      <workItem from="1630856952629" duration="201000" />
     </task>
     <servers />
   </component>

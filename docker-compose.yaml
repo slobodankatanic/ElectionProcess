@@ -59,7 +59,7 @@ services:
 #      - electionProcessDBMigraton
 #      - authentication
     ports:
-      - 5000:5000
+      - 5003:5003
   official:
     image: official
     environment:
