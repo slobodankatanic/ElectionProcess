@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy;
 
+# object which represents database
 database = SQLAlchemy();
 
 class UserRole(database.Model):
